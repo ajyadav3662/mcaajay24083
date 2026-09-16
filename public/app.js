@@ -4,10 +4,6 @@ const $ = id =>
     document.getElementById(id);
 
 
-/* ---------------------------------
-   API HELPER
----------------------------------- */
-
 async function api(
     url,
     options = {}
@@ -37,10 +33,6 @@ async function api(
 }
 
 
-/* ---------------------------------
-   TOAST
----------------------------------- */
-
 function showToast(message) {
     const toast =
         $("toast");
@@ -60,10 +52,6 @@ function showToast(message) {
 }
 
 
-/* ---------------------------------
-   ESCAPE HTML
----------------------------------- */
-
 function escapeHtml(value) {
     return String(value)
         .replaceAll("&", "&amp;")
@@ -74,14 +62,193 @@ function escapeHtml(value) {
 }
 
 
-/* ---------------------------------
-   LOAD TODAY
----------------------------------- */
+/* =========================
+   MORNING REMINDER
+========================= */
+
+function showMorningReminder(
+    habits
+) {
+    const reminder =
+        $("morningReminder");
+
+    const message =
+        $("reminderMessage");
+
+    const incompleteHabits =
+        habits.filter(
+            habit =>
+                !habit.completedToday
+        );
+
+    if (!incompleteHabits.length) {
+        reminder.classList.add(
+            "hidden"
+        );
+
+        return;
+    }
+
+    const habitNames =
+        incompleteHabits
+            .map(
+                habit =>
+                    habit.name
+            );
+
+    let habitText;
+
+    if (habitNames.length === 1) {
+        habitText =
+            `You still have 1 habit to log today: ${habitNames[0]}.`;
+    } else if (habitNames.length === 2) {
+        habitText =
+            `You still have 2 habits to log today: ${habitNames.join(" and ")}.`;
+    } else {
+        const last =
+            habitNames.pop();
+
+        habitText =
+            `You still have ${incompleteHabits.length} habits to log today: ${habitNames.join(", ")}, and ${last}.`;
+    }
+
+    message.textContent =
+        habitText;
+
+    reminder.classList.remove(
+        "hidden"
+    );
+
+    sendBrowserReminder(
+        incompleteHabits
+    );
+}
+
+
+function dismissReminder() {
+    $("morningReminder")
+        .classList.add(
+            "hidden"
+        );
+}
+
+
+/* Browser notification */
+
+function sendBrowserReminder(
+    incompleteHabits
+) {
+    if (
+        !("Notification" in window)
+    ) {
+        return;
+    }
+
+    const currentHour =
+        new Date().getHours();
+
+    /*
+       Morning reminder window:
+       5:00 AM - 11:59 AM
+    */
+
+    if (
+        currentHour < 5 ||
+        currentHour >= 12
+    ) {
+        return;
+    }
+
+    const today =
+        new Date()
+            .toISOString()
+            .slice(0, 10);
+
+    const reminderKey =
+        `ananya-reminder-${today}`;
+
+    if (
+        localStorage.getItem(
+            reminderKey
+        )
+    ) {
+        return;
+    }
+
+    const names =
+        incompleteHabits
+            .map(
+                habit =>
+                    habit.name
+            )
+            .join(", ");
+
+    if (
+        Notification.permission ===
+        "granted"
+    ) {
+        new Notification(
+            "Ananya's Morning Reminder",
+            {
+                body:
+                    `You still have habits to log today: ${names}`,
+                icon: "/favicon.ico"
+            }
+        );
+
+        localStorage.setItem(
+            reminderKey,
+            "sent"
+        );
+
+        return;
+    }
+
+    if (
+        Notification.permission ===
+        "default"
+    ) {
+        Notification
+            .requestPermission()
+            .then(
+                permission => {
+
+                    if (
+                        permission ===
+                        "granted"
+                    ) {
+                        new Notification(
+                            "Ananya's Morning Reminder",
+                            {
+                                body:
+                                    `You still have habits to log today: ${names}`
+                            }
+                        );
+
+                        localStorage.setItem(
+                            reminderKey,
+                            "sent"
+                        );
+                    }
+
+                }
+            )
+            .catch(() => {
+                /*
+                    Browser notification is optional.
+                    In-app reminder still works.
+                */
+            });
+    }
+}
+
+
+/* =========================
+   TODAY
+========================= */
 
 async function loadToday() {
-
     try {
-
         const data =
             await api(
                 "/api/today"
@@ -137,12 +304,21 @@ async function loadToday() {
             .textContent =
             data.total;
 
+
+        /* NEW:
+           Show morning reminder
+        */
+
+        showMorningReminder(
+            data.habits
+        );
+
+
         renderTodayHabits(
             data.habits
         );
 
     } catch (error) {
-
         showToast(
             error.message
         );
@@ -150,19 +326,13 @@ async function loadToday() {
 }
 
 
-/* ---------------------------------
-   RENDER TODAY
----------------------------------- */
-
 function renderTodayHabits(
     habits
 ) {
-
     const container =
         $("todayHabits");
 
     if (!habits.length) {
-
         container.innerHTML = `
             <div class="empty">
                 <h3>No habits scheduled today</h3>
@@ -258,17 +428,15 @@ function renderTodayHabits(
 }
 
 
-/* ---------------------------------
-   COMPLETE / UNCOMPLETE
----------------------------------- */
+/* =========================
+   COMPLETION
+========================= */
 
 async function toggleCompletion(
     id,
     completed
 ) {
-
     try {
-
         const today =
             new Date()
                 .toISOString()
@@ -306,12 +474,12 @@ async function toggleCompletion(
         }
 
         await loadToday();
+
         await loadHabits(
             archivedView
         );
 
     } catch (error) {
-
         showToast(
             error.message
         );
@@ -319,14 +487,13 @@ async function toggleCompletion(
 }
 
 
-/* ---------------------------------
-   LOAD HABITS
----------------------------------- */
+/* =========================
+   HABIT MANAGEMENT
+========================= */
 
 async function loadHabits(
     archived = false
 ) {
-
     archivedView =
         archived;
 
@@ -343,7 +510,6 @@ async function loadHabits(
         );
 
     try {
-
         const habits =
             await api(
                 `/api/habits?archived=${archived}`
@@ -354,7 +520,6 @@ async function loadHabits(
         );
 
     } catch (error) {
-
         showToast(
             error.message
         );
@@ -362,14 +527,9 @@ async function loadHabits(
 }
 
 
-/* ---------------------------------
-   SWITCH TAB
----------------------------------- */
-
 function switchTab(
     archived
 ) {
-
     $("searchInput")
         .value = "";
 
@@ -379,19 +539,13 @@ function switchTab(
 }
 
 
-/* ---------------------------------
-   RENDER HABIT LIST
----------------------------------- */
-
 function renderHabitList(
     habits
 ) {
-
     const container =
         $("habitList");
 
     if (!habits.length) {
-
         container.innerHTML = `
             <div class="empty">
                 No habits found.
@@ -478,9 +632,9 @@ function renderHabitList(
 }
 
 
-/* ---------------------------------
+/* =========================
    MODAL
----------------------------------- */
+========================= */
 
 function openAddModal() {
 
@@ -522,14 +676,9 @@ function closeModal() {
 }
 
 
-/* ---------------------------------
-   EDIT HABIT
----------------------------------- */
-
 async function editHabit(
     id
 ) {
-
     try {
 
         const habit =
@@ -568,7 +717,6 @@ async function editHabit(
             );
 
     } catch (error) {
-
         showToast(
             error.message
         );
@@ -576,9 +724,9 @@ async function editHabit(
 }
 
 
-/* ---------------------------------
+/* =========================
    SAVE HABIT
----------------------------------- */
+========================= */
 
 $("habitForm")
     .addEventListener(
@@ -592,6 +740,7 @@ $("habitForm")
                     .value;
 
             const payload = {
+
                 name:
                     $("habitName")
                         .value,
@@ -668,14 +817,13 @@ $("habitForm")
     );
 
 
-/* ---------------------------------
-   ARCHIVE
----------------------------------- */
+/* =========================
+   ARCHIVE / RESTORE
+========================= */
 
 async function archiveHabit(
     id
 ) {
-
     if (
         !confirm(
             "Archive this habit? You can restore it later."
@@ -713,14 +861,9 @@ async function archiveHabit(
 }
 
 
-/* ---------------------------------
-   RESTORE
----------------------------------- */
-
 async function restoreHabit(
     id
 ) {
-
     try {
 
         await api(
@@ -750,11 +893,12 @@ async function restoreHabit(
 }
 
 
-/* ---------------------------------
+/* =========================
    SEARCH
----------------------------------- */
+========================= */
 
 let searchTimer;
+
 
 function searchHabits() {
 
@@ -806,9 +950,9 @@ function searchHabits() {
 }
 
 
-/* ---------------------------------
-   CLOSE MODAL ON BACKDROP
----------------------------------- */
+/* =========================
+   MODAL CLOSE
+========================= */
 
 $("habitModal")
     .addEventListener(
@@ -821,13 +965,15 @@ $("habitModal")
             ) {
                 closeModal();
             }
+
         }
     );
 
 
-/* ---------------------------------
-   INITIALIZE
----------------------------------- */
+/* =========================
+   INITIAL LOAD
+========================= */
 
 loadToday();
+
 loadHabits(false);

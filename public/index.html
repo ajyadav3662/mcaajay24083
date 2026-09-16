@@ -2,30 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
-
     <meta
         name="description"
         content="A simple and reliable 75-day habit and streak tracker."
     >
-
     <title>Ananya's 75-Day Challenge</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
     <div class="app">
 
-        <!-- HEADER -->
-
         <header class="header">
-
             <div>
                 <div class="label">
                     SELF IMPROVEMENT
@@ -41,7 +33,6 @@
             </div>
 
             <div class="challenge-box">
-
                 <div class="challenge-label">
                     CHALLENGE PROGRESS
                 </div>
@@ -56,35 +47,74 @@
                         class="progress-bar"
                     ></div>
                 </div>
-
             </div>
-
         </header>
 
 
-        <!-- SUMMARY -->
+        <!-- MORNING REMINDER -->
+
+        <section
+            id="morningReminder"
+            class="morning-reminder hidden"
+        >
+            <div class="reminder-icon">
+                ☀️
+            </div>
+
+            <div class="reminder-content">
+                <strong>
+                    Good morning!
+                </strong>
+
+                <p id="reminderMessage">
+                    You still have habits to complete today.
+                </p>
+            </div>
+
+            <button
+                class="reminder-close"
+                onclick="dismissReminder()"
+                aria-label="Dismiss reminder"
+            >
+                ×
+            </button>
+        </section>
+
 
         <section class="summary">
 
             <div class="summary-card">
-                <span>Completed Today</span>
-                <strong id="completedCount">0</strong>
+                <span>
+                    Completed Today
+                </span>
+
+                <strong id="completedCount">
+                    0
+                </strong>
             </div>
 
             <div class="summary-card">
-                <span>Remaining</span>
-                <strong id="remainingCount">0</strong>
+                <span>
+                    Remaining
+                </span>
+
+                <strong id="remainingCount">
+                    0
+                </strong>
             </div>
 
             <div class="summary-card">
-                <span>Today's Habits</span>
-                <strong id="totalCount">0</strong>
+                <span>
+                    Today's Habits
+                </span>
+
+                <strong id="totalCount">
+                    0
+                </strong>
             </div>
 
         </section>
 
-
-        <!-- TODAY -->
 
         <section>
 
@@ -116,8 +146,6 @@
 
         </section>
 
-
-        <!-- HABIT MANAGEMENT -->
 
         <section class="management">
 
@@ -154,8 +182,6 @@
             </div>
 
 
-            <!-- TABS -->
-
             <div class="tabs">
 
                 <button
@@ -187,7 +213,7 @@
     </div>
 
 
-    <!-- MODAL -->
+    <!-- HABIT MODAL -->
 
     <div
         id="habitModal"
@@ -224,6 +250,7 @@
                     type="hidden"
                     id="habitId"
                 >
+
 
                 <label>
                     Habit Name
@@ -263,7 +290,6 @@
                         </option>
 
                     </select>
-
                 </label>
 
 
@@ -303,8 +329,6 @@
 
     </div>
 
-
-    <!-- TOAST -->
 
     <div
         id="toast"
