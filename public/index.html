@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="A simple and reliable 75-day habit and streak tracker."
+    >
+
+    <title>Ananya's 75-Day Challenge</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- HEADER -->
+
+        <header class="header">
+
+            <div>
+                <div class="label">
+                    SELF IMPROVEMENT
+                </div>
+
+                <h1>
+                    Ananya's 75-Day Challenge
+                </h1>
+
+                <p id="todayDate">
+                    Loading date...
+                </p>
+            </div>
+
+            <div class="challenge-box">
+
+                <div class="challenge-label">
+                    CHALLENGE PROGRESS
+                </div>
+
+                <strong id="challengeDay">
+                    Day 1 / 75
+                </strong>
+
+                <div class="progress-track">
+                    <div
+                        id="progressBar"
+                        class="progress-bar"
+                    ></div>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- SUMMARY -->
+
+        <section class="summary">
+
+            <div class="summary-card">
+                <span>Completed Today</span>
+                <strong id="completedCount">0</strong>
+            </div>
+
+            <div class="summary-card">
+                <span>Remaining</span>
+                <strong id="remainingCount">0</strong>
+            </div>
+
+            <div class="summary-card">
+                <span>Today's Habits</span>
+                <strong id="totalCount">0</strong>
+            </div>
+
+        </section>
+
+
+        <!-- TODAY -->
+
+        <section>
+
+            <div class="section-header">
+
+                <div>
+                    <div class="label">
+                        TODAY
+                    </div>
+
+                    <h2>
+                        Today's Habits
+                    </h2>
+                </div>
+
+                <button
+                    class="primary-button"
+                    onclick="openAddModal()"
+                >
+                    + Add Habit
+                </button>
+
+            </div>
+
+            <div
+                id="todayHabits"
+                class="habit-grid"
+            ></div>
+
+        </section>
+
+
+        <!-- HABIT MANAGEMENT -->
+
+        <section class="management">
+
+            <div class="section-header">
+
+                <div>
+                    <div class="label">
+                        HABIT MANAGEMENT
+                    </div>
+
+                    <h2>
+                        Your Habits
+                    </h2>
+                </div>
+
+                <div class="management-controls">
+
+                    <input
+                        id="searchInput"
+                        type="search"
+                        placeholder="Search habits..."
+                        oninput="searchHabits()"
+                    >
+
+                    <button
+                        class="primary-button"
+                        onclick="openAddModal()"
+                    >
+                        + Add
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- TABS -->
+
+            <div class="tabs">
+
+                <button
+                    id="activeTab"
+                    class="tab active"
+                    onclick="switchTab(false)"
+                >
+                    Active
+                </button>
+
+                <button
+                    id="archivedTab"
+                    class="tab"
+                    onclick="switchTab(true)"
+                >
+                    Archived
+                </button>
+
+            </div>
+
+
+            <div
+                id="habitList"
+                class="habit-list"
+            ></div>
+
+        </section>
+
+    </div>
+
+
+    <!-- MODAL -->
+
+    <div
+        id="habitModal"
+        class="modal hidden"
+    >
+
+        <div class="modal-card">
+
+            <div class="modal-header">
+
+                <div>
+                    <div class="label">
+                        HABIT
+                    </div>
+
+                    <h2 id="modalTitle">
+                        Add Habit
+                    </h2>
+                </div>
+
+                <button
+                    class="close-button"
+                    onclick="closeModal()"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="habitForm">
+
+                <input
+                    type="hidden"
+                    id="habitId"
+                >
+
+                <label>
+                    Habit Name
+
+                    <input
+                        id="habitName"
+                        type="text"
+                        placeholder="e.g. Drink Water"
+                        maxlength="100"
+                        required
+                    >
+                </label>
+
+
+                <label>
+                    Description
+
+                    <textarea
+                        id="habitDescription"
+                        placeholder="Describe your habit..."
+                        maxlength="500"
+                    ></textarea>
+                </label>
+
+
+                <label>
+                    Schedule
+
+                    <select id="habitSchedule">
+
+                        <option value="daily">
+                            Every Day
+                        </option>
+
+                        <option value="weekdays">
+                            Weekdays
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+                <label>
+                    Start Date
+
+                    <input
+                        id="habitStartDate"
+                        type="date"
+                        required
+                    >
+                </label>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        onclick="closeModal()"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                    >
+                        Save Habit
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- TOAST -->
+
+    <div
+        id="toast"
+        class="toast"
+    ></div>
+
+
+    <script src="app.js"></script>
+
+</body>
+</html>

@@ -1,21 +1,29 @@
 {
-  "name": "ananya_75days",
+  "name": "ananya-75-day-challenge",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A reliable habit tracking application for daily and weekday habits with streak tracking, completion logging, search, update, archive and restore functionality.",
+  "main": "server/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js",
+    "test": "node tests/streak.test.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "keywords": [
+    "habit-tracker",
+    "streak-tracker",
+    "75-day-challenge",
+    "nodejs",
+    "express",
+    "sqlite"
+  ],
+  "author": "Ajay Yadav",
+  "license": "MIT",
   "dependencies": {
-    "better-sqlite3": "^13.0.3",
-    "cors": "^2.8.6",
-    "express": "^5.2.1"
+    "better-sqlite3": "^12.4.1",
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.10"
   }
 }
