@@ -417,8 +417,8 @@ function renderTodayHabits(
                     >
                         ${
                             habit.completedToday
-                                ? "✓ Completed Today"
-                                : "Mark Complete"
+                                ? "✓ Completed Today 🔥"
+                                : "🔥 Mark Complete"
                         }
                     </button>
 
